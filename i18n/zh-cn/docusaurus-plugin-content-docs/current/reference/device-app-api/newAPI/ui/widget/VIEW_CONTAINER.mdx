@@ -3,15 +3,21 @@ title: VIEW_CONTAINER
 sidebar_label: VIEW_CONTAINER 控件容器
 ---
 
+import useBaseUrl from '@docusaurus/useBaseUrl'
+
 > API_LEVEL `2.0` 开始支持，API 兼容性请参考 [API_LEVEL](../../../../../guides/framework/device/compatibility.md)。
 
-![view_container_sample](/img/api/view_container_sample.gif)
+<div style={{display: 'flex', gap: '10px', alignItems: 'center'}}>
+  <img src={useBaseUrl('/img/api/view_container_sample.gif')} width="50%" title="vc_showcase" />
+  <img src={useBaseUrl('/img/api/swiper_vc.gif')} width="50%" title="vc_showcase2" />
+</div>
 
 VIEW_CONTAINER 控件容器是一个非常强大的布局控件，有如下特性：
 
 - 是一个矩形的布局容器，通过其实例方法可以创建子控件
 - 通过 `z_index` 属性控制控件容器的层叠顺序，做到垂直方向的控件层叠效果。并且可以在同一页面中可以创建多个 VIEW_CONTAINER 控件，在 Zepp OS v3 中，最多可以创建 7 个
 - VIEW_CONTAINER 控件容器本身支持滑动，可以作为可滑动容器使用
+- 与 [`setScrollMode`](../../page/setScrollMode.mdx) Swiper 模式配合时使用，实现第二张 GIF 中的复杂布局（整屏滑动，每个屏幕也可视作可滑动的独立容器）
 
 ## 创建 UI 控件
 
@@ -41,6 +47,7 @@ viewContainer.createWidget(xxx, xxx)
 | scroll_frame_func    | 滚动过程中，每一帧会触发回调函数，函数签名 `(frameParams: FrameParams) => void`，`FrameParams` 参考下文                                           | 否       | `function` | 2.0       |
 | scroll_complete_func | 滚动结束时回调函数                                                                                                                                | 否       | `function` | 2.0       |
 | bounce               | 回弹效果，`0`: 禁止、`1`: 开启（默认）                                                                                                            | 否       | `function` | 3.0       |
+| page               | 与 [`setScrollMode`](../../page/setScrollMode.mdx) Swiper 模式配合时使用，整个屏幕使用 Swiper 模式，每一个独立的页面使用 `VIEW_CONTAINER` 实现，用于标记第几页，可以与 Swiper 模式联动                                                                                                           | 否       | `number` | 3.0       |
 
 ### FrameParams: object
 
@@ -161,4 +168,109 @@ Page({
     })
   }
 })
+```
+
+与 SetScrollMode Swiper 模式联合使用，效果见顶部第二张 GIF。
+
+```js
+import { createWidget, widget, align } from "@zos/ui";
+import { px } from "@zos/utils";
+import { setScrollMode, SCROLL_MODE_SWIPER_HORIZONTAL } from "@zos/page";
+
+const PAGE_WIDTH = 480;
+const PAGE_HEIGHT = 480;
+
+Page({
+  build() {
+    setScrollMode({
+      mode: SCROLL_MODE_SWIPER_HORIZONTAL,
+      options: {
+        width: px(PAGE_WIDTH),
+        count: 2,
+      },
+    });
+
+    const viewContainer1 = createWidget(widget.VIEW_CONTAINER, {
+      x: px(0),
+      y: px(0),
+      w: px(PAGE_WIDTH),
+      h: px(PAGE_HEIGHT),
+      scroll_enable: 1,
+      page: 0,
+    });
+
+    viewContainer1.createWidget(widget.TEXT, {
+      x: 0,
+      y: 0,
+      w: px(PAGE_WIDTH),
+      h: px(40),
+      text: "ViewContainer1",
+      text_size: px(26),
+      color: 0xffffff,
+      align_h: align.CENTER_H,
+      align_v: align.CENTER_V,
+    });
+
+    viewContainer1.createWidget(widget.FILL_RECT, {
+      x: 0,
+      y: px(40),
+      w: px(PAGE_WIDTH),
+      h: px(440),
+      color: 0xF84E3F,
+    });
+
+    viewContainer1.createWidget(widget.FILL_RECT, {
+      x: 0,
+      y: px(480),
+      w: px(PAGE_WIDTH),
+      h: px(480),
+      color: 0x42A5F5,
+    });
+
+    const viewContainer2 = createWidget(widget.VIEW_CONTAINER, {
+      x: px(0),
+      y: px(0),
+      w: px(PAGE_WIDTH),
+      h: px(PAGE_HEIGHT),
+      scroll_enable: 1,
+      page: 1,
+    });
+
+    viewContainer2.createWidget(widget.TEXT, {
+      x: 0,
+      y: 0,
+      w: px(PAGE_WIDTH),
+      h: px(40),
+      text: "ViewContainer2",
+      text_size: px(26),
+      color: 0xffffff,
+      align_h: align.CENTER_H,
+      align_v: align.CENTER_V,
+    });
+
+    viewContainer2.createWidget(widget.FILL_RECT, {
+      x: 0,
+      y: px(40),
+      w: px(PAGE_WIDTH),
+      h: px(PAGE_HEIGHT) / 2,
+      color: 0xFFA726,
+    });
+
+    viewContainer2.createWidget(widget.FILL_RECT, {
+      x: 0,
+      y: px(280),
+      w: px(PAGE_WIDTH),
+      h: px(PAGE_HEIGHT) / 2,
+      color: 0xFFD54F,
+    });
+
+    viewContainer2.createWidget(widget.FILL_RECT, {
+      x: 0,
+      y: px(40) + px(PAGE_HEIGHT),
+      w: px(PAGE_WIDTH),
+      h: px(PAGE_HEIGHT) / 2,
+      color: 0x66BB6A,
+    });
+  },
+});
 ```
