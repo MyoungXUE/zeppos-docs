@@ -664,6 +664,7 @@ module.exports = {
                     'reference/device-app-api/newAPI/ui/widget/PICK_DATE',
                     'reference/device-app-api/newAPI/ui/widget/KEYBOARD',
                     'reference/device-app-api/newAPI/ui/widget/PICKER',
+                    'reference/device-app-api/newAPI/ui/widget/TIME_PICKER',
                     'reference/device-app-api/newAPI/ui/widget/SYSTEM_KEYBOARD',
                     // 'reference/device-app-api/newAPI/ui/widget/WIDGET_PICKER',
                   ]
